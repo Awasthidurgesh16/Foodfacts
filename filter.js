@@ -4,23 +4,20 @@ var lineReader = require('readline').createInterface({
 });
 var i=0;
 var lineRecords=[];
-var isHeader = 0;
+var Header = 0;
 var countryIndex=0,fatIndex=0,protienIndex=0,carboIndex=0,saltIndex=0,sugarIndex=0;
 var countryArray = ['Netherlands', 'Canada', 'United Kingdom' , 'United States' , 'Australia' , 'France' , 'Germany' , 'Spain', 'South Africa'];
-var sugarArray = [];
-var saltArray = [];
-var jsonArray = [];
-var count=[];
+var sugarArray = [] ,saltArray = [], jsonArray = [],count=[];
 var north = ['United Kingdom', 'Denmark', 'Sweden','Norway'];
 var central  = ['France', 'Belgium', 'Germany', 'Switzerland','Netherlands'];
 var South = ['Portugal', 'Greece', 'Italy', 'Spain', 'Croatia','Albania'];
-var nfatData =0,nprotienData=0,ncarboData =0,cfatData =0,cprotienData =0,ccarboData =0;
-var sfatData =0,sprotienData=0,scarboData=0;
+var nfatData =0,nprotienData=0,ncarboData =0,cfatData =0,cprotienData =0,ccarboData =0, sfatData =0,sprotienData=0,scarboData=0;
 var jsonArray = [];
 var Europe=[];
 var nobj={},cobj={},sobj={};
 var sCounter=0,cCounter=0,nCounter=0;
-for(var i=0;i<countryArray.length;i++)  // initialise array
+while(i<countryArray.length)
+  // initialise array
 {
   sugarArray[i]=0;
   saltArray[i]=0;
@@ -29,8 +26,10 @@ for(var i=0;i<countryArray.length;i++)  // initialise array
 
 lineReader.on('line',function(line)
 {
-    lineRecords = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);   // split data  line by line 
-    if(isHeader==0)           // it is for fetching index of coloumn
+    lineRecords = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/); 
+      // split data  line by line 
+
+    if(Header==0)         // it is for fetching index of coloumn
     {
         countryIndex = lineRecords.indexOf("countries_en");
         protienIndex = lineRecords.indexOf("proteins_100g");
@@ -39,7 +38,7 @@ lineReader.on('line',function(line)
         saltIndex = lineRecords.indexOf("salt_100g");
         sugarIndex = lineRecords.indexOf("sugars_100g");
         // console.log(countryIndex);
-   isHeader++;
+      Header++;
     
     }   
     else
@@ -64,7 +63,7 @@ lineReader.on('line',function(line)
         nprotienData+=parseFloat(nprotien);
         nCounter++;
          }
-    if(central.includes(lineRecords[countryIndex]))  // it is for checking central countries
+      if(central.includes(lineRecords[countryIndex]))  // it is for checking central countries
          {
         var cfat = lineRecords[fatIndex].replace("",0);
         var cprotien=lineRecords[protienIndex].replace("",0);
@@ -74,7 +73,7 @@ lineReader.on('line',function(line)
         ccarboData+=parseFloat(ccarbo);
         cCounter++;
          }
-    if(South.includes(lineRecords[countryIndex]))   // it is for checking south countries
+      if(South.includes(lineRecords[countryIndex]))   // it is for checking south countries
          {
         var sfat = lineRecords[fatIndex].replace("",0);
         var sprotien=lineRecords[protienIndex].replace("",0);
@@ -115,8 +114,8 @@ lineReader.on('close',function ()       //put data into object
     sobj["carbohydrates"] = scarboData/sCounter;
     Europe.push(sobj);
     fs.writeFile('json/Countries2.json',JSON.stringify(Europe),'utf-8');
-  console.log(jsonArray);
-  console.log(Europe);
+    console.log(jsonArray);
+    console.log(Europe);
 
 });
 
